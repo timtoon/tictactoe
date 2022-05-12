@@ -1,0 +1,96 @@
+<html>
+<head></head>
+<script>
+
+let Tictactoe = class {
+
+    winningMoves = ['123','456','789','147','258','369','159','357'];
+    current = 0;
+    board = 3;
+    players = 2;
+    moves = {};
+    winner = false;
+
+    constructor() {
+        this.board = 3;
+        this.players = 2;
+        this.setupBoard(this.board);
+        this.setupPlayers(this.players);
+    }
+
+    setupBoard(board) {
+        var self = this;
+        var gameboard = '<table>';
+
+        for(var i=0; i < board; i++) {
+            gameboard += '<tr>';
+            for(var j=1; j <= board; j++) {
+                let square = (board * i) + j;
+                gameboard += '<td id="' + square + '" style="width: '+(100 / board)+'%"></td>';
+            }
+            gameboard += '</tr>';
+        }
+        document.write(gameboard + '</table>');
+
+        for(var i=1; i <= board * board; i++) {
+            document.getElementById(i).addEventListener("click", this.makeMove);
+            document.getElementById(i).self = self; // Annoying, no other way to pass class by reference
+        }
+    }
+
+    setupPlayers(players) {
+        for(var i=0; i < players; i++) {
+            this.moves[i] = '';
+        }
+        console.log(this.moves);
+    }
+
+    makeMove() {
+        var me = this.self;
+        var square = document.getElementById(this.id);
+
+        if(square.innerText == '' && !me.winner) {    // if current space is not empty
+            me.moves[this.self.current] += this.id;
+            square.innerText = me.current ? 'O' : 'X';
+
+            me.checkWinner(me.current);
+
+            me.current = ++me.current % me.players;
+            console.log(me.moves);
+            console.log('player ' + me.current + ' of ' + me.players);
+        }
+    }
+
+    checkWinner() {
+        var currentPlayer = this.moves[this.current];
+        this.winningMoves.forEach( (move) => {
+            let moves = move.split('');
+            if(currentPlayer.includes(moves[0]) && currentPlayer.includes(moves[1]) && currentPlayer.includes(moves[2])) {
+                this.winner = true;
+                alert("Player " + (this.current+1) + " wins!!");
+            }
+        });
+    }
+}
+
+new Tictactoe();
+
+</script>
+<style>
+    body {
+        text-align: center;
+        margin: auto 0;
+        font-family: sans-serif;
+    }
+    table {
+        width: 100%;
+        height: 100%;
+        border-collapse: collapse;
+    }
+    table tr td {
+        border: 1px solid black;
+        text-align: center;
+        font-size: 200px;
+    }
+</style>
+<body></body>
